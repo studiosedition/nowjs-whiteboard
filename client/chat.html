@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<script src="/jquery-1.5.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/nowjs/now.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/coffee-script.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/coffeescript">
+			$(document).ready ->
+				draw = false
+				canvas = $('canvas#board')[0]
+				
+				ctx = canvas.getContext '2d'
+				ctx.strokeStyle = 'black'
+				ctx.lineWidth = 15
+				ctx.lineCap = 'round'
+				
+				$('canvas#board').mousedown ->
+					draw = true
+				
+				$('canvas#board').mouseup ->
+					draw = false
+				
+				$('canvas#board').mousemove (e) ->
+					if draw
+						ctx.moveTo e.pageX, e.pageY
+						ctx.lineTo e.pageX + 1, e.pageY + 1
+						ctx.stroke()
+						
+						now.distribute_moveTo e.pageX, e.pageY
+						now.distribute_lineTo e.pageX + 1, e.pageY + 1
+						now.distribute_stroke()
+				
+				now.receive_stroke = ->
+					console.log 'hurgle'
+					ctx.stroke()
+				now.receive_moveTo = (x, y) ->
+					ctx.moveTo x, y
+				now.receive_lineTo = (x, y) ->
+					ctx.lineTo x, y
+		</script>
+		
+		<style type="text/css" media="screen">
+			canvas#board {
+				cursor: crosshair;
+				border: 1px solid black;
+			}
+		</style>
+		
+		<title>chat</title>
+	</head>
+	<body>
+		<canvas id="board" width="400" height="400" />
+	</body>
+</html>
