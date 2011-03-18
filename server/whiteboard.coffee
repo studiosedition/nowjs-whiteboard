@@ -13,7 +13,7 @@ app.get '/:jsfile.js', (req, res) ->
 			res.send data
 
 app.get '/', (req, res) ->
-	fs.readFile '../client/chat.html', (err, html) ->
+	fs.readFile '../client/whiteboard.html', (err, html) ->
 		res.contentType 'text/html'
 		res.send html
 		res.end
