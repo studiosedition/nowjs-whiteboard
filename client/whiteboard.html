@@ -7,38 +7,45 @@
 		<script src="/nowjs/now.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/coffee-script.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/coffeescript">
-			$(document).ready ->
+			$(window).load ->
+				ctx = null
 				draw = false
-				canvas = $('canvas#board')[0]
 				
-				ctx = canvas.getContext '2d'
-				ctx.strokeStyle = 'black'
-				ctx.lineWidth = 15
-				ctx.lineCap = 'round'
-				
-				$('canvas#board').mousedown ->
-					draw = true
-				
-				$('canvas#board').mouseup ->
+				setup_canvas = ->
 					draw = false
+					canvas = $('canvas#board')[0]
 				
-				$('canvas#board').mousemove (e) ->
-					if draw
-						ctx.moveTo e.pageX, e.pageY
-						ctx.lineTo e.pageX + 1, e.pageY + 1
-						ctx.stroke()
+					ctx = canvas.getContext '2d'
+					ctx.strokeStyle = 'black'
+					ctx.lineWidth = 5
+					ctx.lineCap = 'round'
+				
+					$('canvas#board').mousedown ->
+						draw = true
+				
+					$('canvas#board').mouseup ->
+						draw = false
+				
+					$('canvas#board').mousemove (e) ->
+						if draw
+							ctx.moveTo e.pageX, e.pageY
+							ctx.lineTo e.pageX + 1, e.pageY + 1
+							ctx.stroke()
 						
-						now.distribute_moveTo e.pageX, e.pageY
-						now.distribute_lineTo e.pageX + 1, e.pageY + 1
-						now.distribute_stroke()
+							now.distribute_draw e.pageX, e.pageY
 				
-				now.receive_stroke = ->
-					console.log 'hurgle'
-					ctx.stroke()
-				now.receive_moveTo = (x, y) ->
+				now.receive_draw = (x, y) ->
 					ctx.moveTo x, y
-				now.receive_lineTo = (x, y) ->
-					ctx.lineTo x, y
+					ctx.lineTo x + 1, y + 1
+					ctx.stroke()
+				now.receive_identify = (name) ->
+					console.log "sdfsdf #{name}"
+					$('#players').append "<li>#{name}</li>"
+				
+				# Time to go
+				setup_canvas()
+				
+				#now.distribute_identify prompt('Name?', '')
 		</script>
 		
 		<style type="text/css" media="screen">
@@ -51,6 +58,9 @@
 		<title>chat</title>
 	</head>
 	<body>
-		<canvas id="board" width="400" height="400" />
+		<canvas id="board" width="800" height="500"></canvas>
+		<ul id="players">
+			
+		</ul>
 	</body>
 </html>

@@ -22,11 +22,8 @@ app.listen 3000
 
 everyone = require('now').initialize app
 
-everyone.now.distribute_stroke = ->
-	everyone.now.receive_stroke()
+everyone.now.distribute_draw = (x, y) ->
+	everyone.now.receive_draw x, y
 
-everyone.now.distribute_moveTo = (x, y) ->
-	everyone.now.receive_moveTo x, y
-
-everyone.now.distribute_lineTo = (x, y) ->
-	everyone.now.receive_lineTo x, y
+everyone.now.distribute_identify = (name) ->
+	everyone.now.receive_identify name
