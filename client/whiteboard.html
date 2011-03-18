@@ -9,7 +9,9 @@
 		<script type="text/coffeescript">
 			$(window).load ->
 				ctx = null
+				first_point = true
 				draw = false
+				draw_queue = []
 				
 				setup_canvas = ->
 					draw = false
@@ -25,18 +27,31 @@
 				
 					$('canvas#board').mouseup ->
 						draw = false
+						first_point = true
 				
 					$('canvas#board').mousemove (e) ->
-						if draw
-							ctx.moveTo e.pageX, e.pageY
-							ctx.lineTo e.pageX + 1, e.pageY + 1
-							ctx.stroke()
-						
-							now.distribute_draw e.pageX, e.pageY
+						draw_queue.push [e.pageX, e.pageY] if draw
+				
+				eval_draw_queue = ->
+					return if draw_queue.length is 0
+					
+					next = draw_queue.shift()
+					
+					if first_point
+						ctx.moveTo next[0] - 1, next[1] - 1
+						first_point = false
+					
+					ctx.lineTo next[0], next[1]
+					ctx.stroke()
+				
+					now.distribute_draw next[0], next[1]
 				
 				now.receive_draw = (x, y) ->
-					ctx.moveTo x, y
-					ctx.lineTo x + 1, y + 1
+					if first_point
+						ctx.moveTo x - 1, y - 1
+						first_point = false
+					
+					ctx.lineTo x, y
 					ctx.stroke()
 				now.receive_identify = (name) ->
 					console.log "sdfsdf #{name}"
@@ -44,6 +59,9 @@
 				
 				# Time to go
 				setup_canvas()
+				
+				# Start the queue eval interval
+				setInterval eval_draw_queue, 10
 				
 				#now.distribute_identify prompt('Name?', '')
 		</script>
