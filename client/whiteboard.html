@@ -36,14 +36,6 @@
 					return if draw_queue.length is 0
 					
 					next = draw_queue.shift()
-					
-					if first_point
-						ctx.moveTo next[0] - 1, next[1] - 1
-						first_point = false
-					
-					ctx.lineTo next[0], next[1]
-					ctx.stroke()
-				
 					now.distribute_draw next[0], next[1]
 				
 				now.receive_draw = (x, y) ->
