@@ -18,6 +18,7 @@
 					canvas = $('canvas#board')[0]
 				
 					ctx = canvas.getContext '2d'
+					ctx.translate 0.5, 0.5
 					ctx.strokeStyle = 'black'
 					ctx.lineWidth = 5
 					ctx.lineCap = 'round'
